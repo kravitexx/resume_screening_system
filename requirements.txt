@@ -21,3 +21,5 @@ pandas>=2.2.0
 
 # --- Export & Reporting ---
 fpdf2>=2.7.9
+markdown>=3.4.0
+htmldocx>=0.0.6
