@@ -194,7 +194,7 @@ html, body, [data-testid="stAppViewContainer"],
 }
 
 [data-testid="stExpander"] [data-testid="stExpanderDetails"] {
-    padding: 0 1.4rem 1.4rem !important;
+    padding: 1.4rem !important;
 }
 
 /* Metric Cards — glass tiles */
@@ -316,14 +316,14 @@ html, body, [data-testid="stAppViewContainer"],
 /* ============================================================
    FILE UPLOADER — Dashed glass zone
    ============================================================ */
-[data-testid="stFileUploader"] {
+[data-testid="stFileUploadDropzone"] {
     background: rgba(255, 255, 255, 0.02) !important;
-    border: 2px dashed rgba(255, 255, 255, 0.10) !important;
+    border: 2px dashed rgba(255, 255, 255, 0.15) !important;
     border-radius: var(--r-lg) !important;
     transition: all var(--t-base) !important;
 }
 
-[data-testid="stFileUploader"]:hover {
+[data-testid="stFileUploadDropzone"]:hover {
     border-color: var(--accent) !important;
     background: rgba(139, 92, 246, 0.04) !important;
     box-shadow: 0 0 20px rgba(139, 92, 246, 0.08) !important;

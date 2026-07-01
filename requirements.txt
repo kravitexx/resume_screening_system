@@ -18,3 +18,6 @@ python-docx>=1.1.0
 numpy>=2.0.0
 scikit-learn>=1.6.0
 pandas>=2.2.0
+
+# --- Export & Reporting ---
+fpdf2>=2.7.9
