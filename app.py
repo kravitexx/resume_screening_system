@@ -31,7 +31,7 @@ st.set_page_config(
 
 
 # ============================================================
-# Load Custom CSS (Apple Glassmorphism)
+# Load Custom CSS (Dark Glassmorphism)
 # ============================================================
 def load_css():
     """Inject the glassmorphism CSS stylesheet."""

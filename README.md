@@ -2,7 +2,7 @@
 
 A two-tier AI-powered resume screening system built with **Streamlit** and **Google Gemini AI** for a Capstone Project (2026).
 
-> **Traditional ATS use rigid keyword matching.** This system goes beyond keywords — using **Semantic Vector Embeddings** to understand context and meaning, not just exact matches, combined with a beautiful Apple iOS-inspired Glassmorphism UI.
+> **Traditional ATS use rigid keyword matching.** This system goes beyond keywords — using **Semantic Vector Embeddings** to understand context and meaning, not just exact matches, combined with a custom **Dark Glassmorphism UI** featuring a deep space color palette, frosted glass card components, and purple gradient accents.
 
 ---
 
@@ -88,7 +88,7 @@ Resume Screening System/
 │   ├── config.toml          # Streamlit dark theme
 │   └── secrets.toml         # API key (git-ignored)
 ├── assets/
-│   └── style.css            # Apple glassmorphism CSS
+│   └── style.css            # Custom dark glassmorphism CSS
 ├── utils/
 │   ├── __init__.py
 │   ├── text_extraction.py   # PDF/DOCX parsing

@@ -1,8 +1,8 @@
 /* ============================================================
-   Apple iOS Glassmorphism — Resume Screening System
+   Dark Glassmorphism UI -- Resume Screening System
    ============================================================
-   DESIGN PHILOSOPHY:
-   - Inspired by Apple's iOS "Liquid Glass" / translucency effect
+   - Custom deep space dark theme with frosted glass card components,
+     purple gradient accents, and a deep navy/indigo color palette.
    - Multiple frosted layers with depth via different blur levels
    - Vibrant gradient mesh background showing THROUGH panels
    - Specular highlights on glass edges (top-left light source)
@@ -46,7 +46,7 @@
     --text-secondary: #94A3B8;
     --text-muted: #64748B;
 
-    /* Radii (Apple uses generous, smooth radii) */
+    /* Radii — generous smooth corners for a modern card look */
     --r-sm: 10px;
     --r-md: 14px;
     --r-lg: 18px;
