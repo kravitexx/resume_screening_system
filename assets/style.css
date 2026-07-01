@@ -1,0 +1,453 @@
+/* ============================================================
+   Apple iOS Glassmorphism — Resume Screening System
+   ============================================================
+   DESIGN PHILOSOPHY:
+   - Inspired by Apple's iOS "Liquid Glass" / translucency effect
+   - Multiple frosted layers with depth via different blur levels
+   - Vibrant gradient mesh background showing THROUGH panels
+   - Specular highlights on glass edges (top-left light source)
+   - SF Pro-like typography (Inter as web fallback)
+   - Subtle shadow halos and inner glow on interactive elements
+   ============================================================ */
+
+/* ---- Google Fonts ---- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+/* ---- Design Tokens ---- */
+:root {
+    /* Glass surfaces */
+    --glass-bg: rgba(255, 255, 255, 0.045);
+    --glass-bg-hover: rgba(255, 255, 255, 0.08);
+    --glass-bg-strong: rgba(255, 255, 255, 0.07);
+    --glass-bg-sidebar: rgba(20, 14, 40, 0.55);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-border-hover: rgba(255, 255, 255, 0.16);
+    --glass-border-top: rgba(255, 255, 255, 0.15);
+    --glass-blur: 24px;
+    --glass-blur-heavy: 50px;
+
+    /* Accent Palette */
+    --accent: #8B5CF6;
+    --accent-glow: rgba(139, 92, 246, 0.35);
+    --accent-blue: #60A5FA;
+    --accent-cyan: #22D3EE;
+    --accent-green: #34D399;
+    --accent-green-bg: rgba(52, 211, 153, 0.10);
+    --accent-green-border: rgba(52, 211, 153, 0.22);
+    --accent-red: #F87171;
+    --accent-red-bg: rgba(248, 113, 113, 0.10);
+    --accent-red-border: rgba(248, 113, 113, 0.22);
+    --accent-amber: #FBBF24;
+    --accent-amber-bg: rgba(251, 191, 36, 0.10);
+    --accent-amber-border: rgba(251, 191, 36, 0.22);
+
+    /* Text */
+    --text-primary: #F8FAFC;
+    --text-secondary: #94A3B8;
+    --text-muted: #64748B;
+
+    /* Radii (Apple uses generous, smooth radii) */
+    --r-sm: 10px;
+    --r-md: 14px;
+    --r-lg: 18px;
+    --r-xl: 24px;
+    --r-pill: 100px;
+
+    /* Shadows */
+    --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    --shadow-glass-hover: 0 12px 40px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    --shadow-glow: 0 0 40px var(--accent-glow);
+    --shadow-soft: 0 2px 12px rgba(0, 0, 0, 0.15);
+
+    /* Transitions */
+    --t-fast: 0.15s ease;
+    --t-base: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --t-spring: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ============================================================
+   BACKGROUND — Vibrant gradient mesh
+   The whole point of glassmorphism is that something beautiful
+   shows THROUGH the frosted panels. This creates that canvas.
+   ============================================================ */
+html, body, [data-testid="stAppViewContainer"],
+[data-testid="stApp"] {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif !important;
+    color: var(--text-primary) !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+[data-testid="stApp"] {
+    background:
+        radial-gradient(ellipse 80% 60% at 15% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 85% 30%, rgba(59, 130, 246, 0.12) 0%, transparent 55%),
+        radial-gradient(ellipse 70% 40% at 50% 90%, rgba(34, 211, 238, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse 50% 50% at 30% 70%, rgba(236, 72, 153, 0.06) 0%, transparent 50%),
+        linear-gradient(160deg, #080515 0%, #0C0820 25%, #0E0A24 50%, #0A0618 75%, #06030F 100%) !important;
+    background-attachment: fixed !important;
+}
+
+/* Floating ambient orbs — give depth behind glass */
+[data-testid="stApp"]::before {
+    content: '';
+    position: fixed;
+    top: 10%;
+    left: 5%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.12) 0%, rgba(139, 92, 246, 0.02) 40%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    animation: drift1 30s ease-in-out infinite;
+    filter: blur(40px);
+}
+
+[data-testid="stApp"]::after {
+    content: '';
+    position: fixed;
+    bottom: 5%;
+    right: 10%;
+    width: 450px;
+    height: 450px;
+    background: radial-gradient(circle, rgba(34, 211, 238, 0.10) 0%, rgba(59, 130, 246, 0.03) 40%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    animation: drift2 35s ease-in-out infinite;
+    filter: blur(50px);
+}
+
+@keyframes drift1 {
+    0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.8; }
+    33% { transform: translate(60px, -40px) scale(1.1); opacity: 1; }
+    66% { transform: translate(-30px, 50px) scale(0.9); opacity: 0.7; }
+}
+@keyframes drift2 {
+    0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.7; }
+    33% { transform: translate(-50px, 30px) scale(1.05); opacity: 0.9; }
+    66% { transform: translate(40px, -40px) scale(0.95); opacity: 0.6; }
+}
+
+/* ============================================================
+   SIDEBAR — Deep frosted glass panel
+   ============================================================ */
+[data-testid="stSidebar"] {
+    background: var(--glass-bg-sidebar) !important;
+    backdrop-filter: blur(var(--glass-blur-heavy)) saturate(1.4) !important;
+    -webkit-backdrop-filter: blur(var(--glass-blur-heavy)) saturate(1.4) !important;
+    border-right: 1px solid var(--glass-border-top) !important;
+    box-shadow: 4px 0 30px rgba(0, 0, 0, 0.3) !important;
+}
+
+[data-testid="stSidebar"] [data-testid="stMarkdown"] {
+    color: var(--text-primary) !important;
+}
+
+/* ============================================================
+   MAIN CONTENT
+   ============================================================ */
+.main .block-container {
+    padding-top: 2rem !important;
+    padding-bottom: 3rem !important;
+    max-width: 1200px !important;
+}
+
+/* ============================================================
+   GLASS PANELS — The core frosted effect
+   Applied to expanders, metric cards, and keyed containers
+   
+   Key technique: multiple layers create realistic glass:
+   1. backdrop-filter: blur() — the frosting
+   2. Semi-transparent background — tint
+   3. Top border lighter than sides — specular highlight
+   4. Inset box-shadow — inner glow from "light source"
+   ============================================================ */
+
+/* Expanders — main glass containers */
+[data-testid="stExpander"] {
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(var(--glass-blur)) saturate(1.3) !important;
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.3) !important;
+    border: 1px solid var(--glass-border) !important;
+    border-top-color: var(--glass-border-top) !important;
+    border-radius: var(--r-xl) !important;
+    margin-bottom: 1rem !important;
+    overflow: hidden !important;
+    box-shadow: var(--shadow-glass) !important;
+    transition: all var(--t-base) !important;
+}
+
+[data-testid="stExpander"]:hover {
+    background: var(--glass-bg-hover) !important;
+    border-color: var(--glass-border-hover) !important;
+    box-shadow: var(--shadow-glass-hover) !important;
+    transform: translateY(-1px);
+}
+
+[data-testid="stExpander"] summary {
+    color: var(--text-primary) !important;
+    font-weight: 600 !important;
+    padding: 1.1rem 1.4rem !important;
+    font-size: 0.95rem !important;
+}
+
+[data-testid="stExpander"] [data-testid="stExpanderDetails"] {
+    padding: 0 1.4rem 1.4rem !important;
+}
+
+/* Metric Cards — glass tiles */
+[data-testid="stMetric"] {
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(20px) saturate(1.2) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(1.2) !important;
+    border: 1px solid var(--glass-border) !important;
+    border-top-color: var(--glass-border-top) !important;
+    border-radius: var(--r-lg) !important;
+    padding: 1.1rem 1rem !important;
+    box-shadow: var(--shadow-glass) !important;
+    transition: all var(--t-base) !important;
+}
+
+[data-testid="stMetric"]:hover {
+    background: var(--glass-bg-hover) !important;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-glass-hover) !important;
+}
+
+[data-testid="stMetric"] [data-testid="stMetricValue"] {
+    color: var(--accent) !important;
+    font-weight: 800 !important;
+    font-size: 1.7rem !important;
+}
+
+[data-testid="stMetric"] [data-testid="stMetricLabel"] {
+    color: var(--text-secondary) !important;
+    font-weight: 500 !important;
+    font-size: 0.8rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.04em !important;
+}
+
+/* ============================================================
+   BUTTONS — Gradient glass pills
+   ============================================================ */
+[data-testid="stButton"] > button {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.7) 0%, rgba(96, 165, 250, 0.6) 100%) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    color: white !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-top-color: rgba(255, 255, 255, 0.25) !important;
+    border-radius: var(--r-pill) !important;
+    padding: 0.7rem 2rem !important;
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+    letter-spacing: 0.01em !important;
+    box-shadow: 0 4px 20px rgba(139, 92, 246, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+    transition: all var(--t-spring) !important;
+}
+
+[data-testid="stButton"] > button:hover {
+    transform: translateY(-3px) scale(1.02) !important;
+    box-shadow: var(--shadow-glow), 0 8px 30px rgba(139, 92, 246, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.85) 0%, rgba(96, 165, 250, 0.75) 100%) !important;
+}
+
+[data-testid="stButton"] > button:active {
+    transform: translateY(-1px) scale(0.99) !important;
+}
+
+/* PRO Unlock Button — special rainbow gradient */
+[class*="st-key-pro-btn"] [data-testid="stButton"] > button {
+    background: linear-gradient(135deg,
+        rgba(251, 191, 36, 0.7) 0%,
+        rgba(248, 113, 113, 0.6) 35%,
+        rgba(139, 92, 246, 0.7) 70%,
+        rgba(96, 165, 250, 0.6) 100%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    font-size: 1.1rem !important;
+    padding: 0.9rem 2.5rem !important;
+    box-shadow:
+        0 4px 25px rgba(251, 191, 36, 0.2),
+        0 4px 25px rgba(139, 92, 246, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+    animation: proBreath 4s ease-in-out infinite !important;
+}
+
+@keyframes proBreath {
+    0%, 100% {
+        box-shadow: 0 4px 25px rgba(251, 191, 36, 0.15), 0 4px 25px rgba(139, 92, 246, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    }
+    50% {
+        box-shadow: 0 6px 40px rgba(251, 191, 36, 0.3), 0 6px 40px rgba(139, 92, 246, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    }
+}
+
+/* ============================================================
+   TEXT INPUTS — Frosted input fields
+   ============================================================ */
+[data-testid="stTextArea"] textarea,
+[data-testid="stTextInput"] input {
+    background: rgba(255, 255, 255, 0.04) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    border: 1px solid var(--glass-border) !important;
+    border-radius: var(--r-md) !important;
+    color: var(--text-primary) !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 0.9rem !important;
+    transition: all var(--t-fast) !important;
+}
+
+[data-testid="stTextArea"] textarea:focus,
+[data-testid="stTextInput"] input:focus {
+    border-color: var(--accent) !important;
+    box-shadow: 0 0 0 3px var(--accent-glow), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+    background: rgba(255, 255, 255, 0.06) !important;
+}
+
+[data-testid="stTextArea"] textarea::placeholder,
+[data-testid="stTextInput"] input::placeholder {
+    color: var(--text-muted) !important;
+}
+
+/* ============================================================
+   FILE UPLOADER — Dashed glass zone
+   ============================================================ */
+[data-testid="stFileUploader"] {
+    background: rgba(255, 255, 255, 0.02) !important;
+    border: 2px dashed rgba(255, 255, 255, 0.10) !important;
+    border-radius: var(--r-lg) !important;
+    transition: all var(--t-base) !important;
+}
+
+[data-testid="stFileUploader"]:hover {
+    border-color: var(--accent) !important;
+    background: rgba(139, 92, 246, 0.04) !important;
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.08) !important;
+}
+
+/* ============================================================
+   DATAFRAME / TABLE — Glass table
+   ============================================================ */
+[data-testid="stDataFrame"] {
+    border-radius: var(--r-lg) !important;
+    overflow: hidden !important;
+    border: 1px solid var(--glass-border) !important;
+    box-shadow: var(--shadow-glass) !important;
+}
+
+/* ============================================================
+   PROGRESS BAR
+   ============================================================ */
+[data-testid="stProgress"] > div > div {
+    background: linear-gradient(90deg, var(--accent), var(--accent-blue), var(--accent-cyan)) !important;
+    border-radius: var(--r-pill) !important;
+    box-shadow: 0 0 12px var(--accent-glow) !important;
+}
+
+/* ============================================================
+   STATUS CONTAINER (st.status)
+   ============================================================ */
+[data-testid="stStatus"] {
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(var(--glass-blur)) !important;
+    -webkit-backdrop-filter: blur(var(--glass-blur)) !important;
+    border: 1px solid var(--glass-border) !important;
+    border-radius: var(--r-xl) !important;
+    box-shadow: var(--shadow-glass) !important;
+}
+
+/* ============================================================
+   ALERTS
+   ============================================================ */
+[data-testid="stAlert"] {
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border-radius: var(--r-md) !important;
+    border: 1px solid var(--glass-border) !important;
+    box-shadow: var(--shadow-soft) !important;
+}
+
+/* ============================================================
+   TABS — Frosted pill tabs
+   ============================================================ */
+[data-testid="stTabs"] [data-baseweb="tab-list"] {
+    gap: 0.5rem !important;
+    background: transparent !important;
+}
+
+[data-testid="stTabs"] [data-baseweb="tab"] {
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid var(--glass-border) !important;
+    border-radius: var(--r-pill) !important;
+    padding: 0.5rem 1.5rem !important;
+    color: var(--text-secondary) !important;
+    font-weight: 500 !important;
+    transition: all var(--t-fast) !important;
+}
+
+[data-testid="stTabs"] [data-baseweb="tab"][aria-selected="true"] {
+    background: var(--glass-bg-strong) !important;
+    border-color: var(--accent) !important;
+    color: var(--text-primary) !important;
+    box-shadow: 0 0 15px var(--accent-glow) !important;
+}
+
+[data-testid="stTabs"] [data-baseweb="tab-highlight"],
+[data-testid="stTabs"] [data-baseweb="tab-border"] {
+    display: none !important;
+}
+
+/* ============================================================
+   DIVIDER
+   ============================================================ */
+hr {
+    border-color: var(--glass-border) !important;
+    opacity: 0.6 !important;
+    margin: 1.2rem 0 !important;
+}
+
+/* ============================================================
+   SCROLLBAR — Slim frosted
+   ============================================================ */
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.22);
+}
+
+/* ============================================================
+   HIDE STREAMLIT CHROME
+   ============================================================ */
+#MainMenu { visibility: hidden; }
+footer { visibility: hidden; }
+header[data-testid="stHeader"] {
+    background: transparent !important;
+    backdrop-filter: blur(var(--glass-blur)) !important;
+    -webkit-backdrop-filter: blur(var(--glass-blur)) !important;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+    .main .block-container {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+}
